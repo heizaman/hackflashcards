@@ -2,19 +2,10 @@ var db = require('../db.js');
 var funcs = {};
 
 
-funcs.findUserByEmail = function(email, callback) {
-	var qry = 'SELECT * FROM users WHERE email = ?';
+funcs.createDeck = function(name, front, back, endDate, callback) {
+	var qry = 'INSERT INTO decks (name, front, back, endDate) VALUES (?, ?, ?, ?)';
 
-	db.get().query(qry, [email], function (err, rows) {
-		return callback(err, rows);
-	});
-}
-
-
-funcs.insertNewUser = function(name, email, password, callback) {
-	var qry = 'INSERT INTO users (name, email, password) VALUES (?, ?, ?)';
-
-	db.get().query(qry, [name, email, password], function (err, result) {
+	db.get().query(qry, [name, front, back, endDate], function (err, result) {
 		return callback(err, result);
 	});
 }

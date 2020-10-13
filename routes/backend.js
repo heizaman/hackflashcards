@@ -7,35 +7,32 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
-router.post('/login', function(req, res, next) {
-	var email = req.body.email;
-	var password = req.body.password;
+router.post('/createDeck', function(req, res, next) {
+	var name = req.body.name;
+	var front = req.body.front;
+	var back = req.body.back;
+	var endDate = req.body.endDate;
 
-	if(email == "")
-		return res.json({ "status": "failed", "message": "Please enter a valid email address!"});
-	if(password == "")
-		return res.json({ "status": "failed", "message": "Please enter password!"});
+	if(name == "")
+		return res.json({ "status": "failed", "message": "Please enter a valid name!"});
 
-	db.findUserByEmail(email, function (err, rows) {
+	if(front == "")
+		return res.json({ "status": "failed", "message": "Invalid front data!"});
+
+	if(back == "")
+		return res.json({ "status": "failed", "message": "Invalid back data!"});
+	
+	if(endDate == "")
+		return res.json({ "status": "failed", "message": "Invalid endDate!"});
+
+
+	db.createDeck(name, front, back, endDate, function (err, rows) {
 	    if (err) {
 	    	console.log(err);
 	    	return res.json({ "status": "failed", "message": "Error!" });
 	    }
 
-	    if(rows.length == 0)
-    		return res.json({ "status": "failed", "message": "Unregistered Email!" });
-
-		if(rows[0].password != password)
-			return res.json({ "status": "failed", "message": "Invalid Password!" });
-
-		var data = {
-			"email" : email,
-			"name": rows[0].name,
-			"role": rows[0].role,
-			"token": jwt.createToken(rows[0].userid)
-		};
-
-		return res.json({ "status": "success", "message": "success", "data": data });
+		return res.json({ "status": "success", "message": "success" });
 	});
 });
 
