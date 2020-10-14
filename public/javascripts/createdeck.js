@@ -62,3 +62,61 @@ function nameChanged() {
 
 	$("#deck-name").html(name);
 }
+
+function submitCreateDeck() {
+	var name = $("#deck-name-form").val();
+
+	if(name == "") {
+		alert("Invalid Name");
+		return;
+	}
+	
+	var frontHeading = $("#front-heading-check").is(":checked") ? true : false;
+	var frontSubeading = $("#front-subheading-check").is(":checked") ? true : false;
+	var frontPara = $("#front-para-check").is(":checked") ? true : false;
+	var frontImg = $("#front-img-check").is(":checked") ? true : false;
+
+	var front = JSON.stringify({
+		"heading": frontHeading,
+		"subheading": frontSubeading,
+		"para": frontPara,
+		"img": frontImg
+	});
+
+	var backHeading = $("#back-heading-check").is(":checked") ? true : false;
+	var backSubeading = $("#back-subheading-check").is(":checked") ? true : false;
+	var backPara = $("#back-para-check").is(":checked") ? true : false;
+	var backImg = $("#back-img-check").is(":checked") ? true : false;
+
+	var back = JSON.stringify({
+		"heading": backHeading,
+		"subheading": backSubeading,
+		"para": backPara,
+		"img": backImg
+	});
+
+	var date = $("#deck-date").val();
+
+	if(date == "") {
+		alert("Invalid Date");
+		return;
+	}
+
+	$.ajax({
+		type: "POST",
+		contentType: "application/json",
+		data: JSON.stringify({"name": name, "front": front, "back": back, "endDate": date}),
+		url: '/apis/createDeck',
+		success: function(response) {
+			if(response.status == 'success') {
+				alert("Deck Created!");
+			}
+			else {
+				alert(response.message || "Error!");
+			}
+		},
+		error: function(xhr, status, err) {
+			console.log(err.toString());
+		}
+	});
+}
