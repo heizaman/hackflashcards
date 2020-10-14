@@ -14,7 +14,7 @@
         <div class="field">
           <label class="label">Deck Name</label>
           <div class="control">
-            <input class="input" type="text" placeholder="My Deck">
+            <input class="input" type="text" placeholder="My Deck" onchange="nameChanged()" id="deck-name-form">
           </div>
         </div>
 
@@ -22,22 +22,22 @@
           <label class="label">Front</label>
           <div class="control">
             <label class="checkbox">
-              <input type="checkbox">
+              <input type="checkbox" id="front-heading-check" onchange="checkboxChanged()">
               Heading
             </label>
             <br>
             <label class="checkbox">
-              <input type="checkbox">
+              <input type="checkbox" id="front-subheading-check" onchange="checkboxChanged()">
               Sub-heading
             </label>
             <br>
             <label class="checkbox">
-              <input type="checkbox">
+              <input type="checkbox" id="front-para-check" onchange="checkboxChanged()">
               Paragraph
             </label>
             <br>
             <label class="checkbox">
-              <input type="checkbox">
+              <input type="checkbox" id="front-img-check" onchange="checkboxChanged()">
               Image
             </label>
           </div>
@@ -47,22 +47,22 @@
           <label class="label">Back</label>
           <div class="control">
             <label class="checkbox">
-              <input type="checkbox">
+              <input type="checkbox" id="back-heading-check" onchange="checkboxChanged()">
               Heading
             </label>
             <br>
             <label class="checkbox">
-              <input type="checkbox">
+              <input type="checkbox" id="back-subheading-check" onchange="checkboxChanged()">
               Sub-heading
             </label>
             <br>
             <label class="checkbox">
-              <input type="checkbox">
+              <input type="checkbox" id="back-para-check" onchange="checkboxChanged()">
               Paragraph
             </label>
             <br>
             <label class="checkbox">
-              <input type="checkbox">
+              <input type="checkbox" id="back-img-check" onchange="checkboxChanged()">
               Image
             </label>
           </div>
@@ -71,7 +71,7 @@
         <div class="field">
           <label class="label">Learn By</label>
           <div class="control">
-            <textarea class="textarea" placeholder="Textarea"></textarea>
+            <input type="date" id="deck-date" name="Date">
           </div>
         </div>
 
@@ -95,28 +95,46 @@
           Your Deck
         </p>
 
-        <p class="title is-4">
-          Deck Name
+        <p class="title is-4" id="deck-name">
+          My Deck
         </p>
 
         <div class="card">
           <div class="card-content">
-            <p class="title is-4">
+            <p class="title is-4 d-none" id="front-heading">
               My Heading
             </p>
-            <p class="subtitle">
+            <p class="subtitle d-none" id="front-subheading">
               My subheading
+            </p>
+            <p id="front-para" class="d-none">
+              This is a sample paragraph which shows us how a paragraph will appear on the flashcards of this deck.
+            </p>
+            <figure class="image is-128x128 my-4" style="display: none" id="front-img">
+              <img src="https://bulma.io/images/placeholders/128x128.png">
+            </figure>
+            <p class="subtitle" id="front-sample">
+              Sample Front Flashcard
             </p>
           </div>
         </div>
 
         <div class="card mt-6">
           <div class="card-content">
-            <p class="title is-4">
+            <p class="title is-4 d-none" id="back-heading">
               My Heading
             </p>
-            <p class="subtitle">
+            <p class="subtitle d-none" id="back-subheading">
               My subheading
+            </p>
+            <p id="back-para" class="d-none">
+              This is a sample paragraph which shows us how a paragraph will appear on the flashcards of this deck.
+            </p>
+            <figure class="image is-128x128 my-4" id="back-img" style="display: none">
+              <img src="https://bulma.io/images/placeholders/128x128.png">
+            </figure>
+            <p class="subtitle" id="back-sample">
+              Sample Back Flashcard
             </p>
           </div>
         </div>
@@ -124,3 +142,6 @@
     </section>
   </div>
 </div>
+
+
+<script src="/javascripts/createDeck.js"></script>
