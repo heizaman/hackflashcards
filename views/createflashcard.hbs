@@ -1,0 +1,154 @@
+{{> header}}
+
+
+<section class="section pb-0 has-text-centered">
+  <div class="container is-fluid">
+    <p class="title is-2">
+      Create Flashcard<span id="deck-name"></span>
+    </p>
+  </div>
+</section>
+
+<div class="columns">
+
+  <div class="column">
+    <section class="section">
+      <div class="container is-fluid">
+
+        <p class="title">
+          Create Flashcard
+        </p>
+
+        <p class="title is-4">
+          Front
+        </p>
+
+        <div class="field d-none" id="front-heading-form-div">
+          <label class="label">Heading</label>
+          <div class="control">
+            <input class="input" type="text" placeholder="My Heading" onchange="fieldChanged()" id="front-heading-form" disabled="true">
+          </div>
+        </div>
+
+        <div class="field d-none" id="front-subheading-form-div">
+          <label class="label">Sub-heading</label>
+          <div class="control">
+            <input class="input" type="text" placeholder="My subheading" onchange="fieldChanged()" id="front-subheading-form" disabled="true">
+          </div>
+        </div>
+
+        <div class="field d-none" id="front-para-form-div">
+          <label class="label">Paragraph</label>
+          <div class="control">
+            <textarea class="textarea" placeholder="My Paragraph" onchange="fieldChanged()" id="front-para-form" disabled="true"></textarea>
+          </div>
+        </div>
+
+        <div class="field d-none" id="front-img-form-div">
+          <label class="label">Image</label>
+          <div class="control">
+            <input class="input" type="text" placeholder="My Image URL" onchange="fieldChanged()" id="front-img-form" disabled="true">
+          </div>
+        </div>
+
+        <p class="title is-4 mt-5">
+          Back
+        </p>
+
+        <div class="field d-none" id="back-heading-form-div">
+          <label class="label">Heading</label>
+          <div class="control">
+            <input class="input" type="text" placeholder="My Heading" onchange="fieldChanged()" id="back-heading-form" disabled="true">
+          </div>
+        </div>
+
+        <div class="field d-none" id="back-subheading-form-div">
+          <label class="label">Sub-heading</label>
+          <div class="control">
+            <input class="input" type="text" placeholder="My subheading" onchange="fieldChanged()" id="back-subheading-form" disabled="true">
+          </div>
+        </div>
+
+        <div class="field d-none" id="back-para-form-div">
+          <label class="label">Paragraph</label>
+          <div class="control">
+            <textarea class="textarea" placeholder="My Paragraph" onchange="fieldChanged()" id="back-para-form" disabled="true"></textarea>
+          </div>
+        </div>
+
+        <div class="field d-none" id="back-img-form-div">
+          <label class="label">Image</label>
+          <div class="control">
+            <input class="input" type="text" placeholder="My Image URL" onchange="fieldChanged()" id="back-img-form" disabled="true">
+          </div>
+        </div>
+
+        <div class="field is-grouped">
+          <div class="control">
+            <button class="button is-link" onclick="submitCreateDeck()">Create Flashcard</button>
+          </div>
+          {{!-- <div class="control">
+            <button class="button is-link is-light">Cancel</button>
+          </div> --}}
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+  <div class="column">
+    <section class="section">
+      <div class="container is-fluid">
+        <p class="title">
+          Your Flashcard
+        </p>
+
+        <p class="subtitle my-3">
+          Front
+        </p>
+        <div class="card">
+          <div class="card-content">
+            <p class="title is-4 d-none" id="front-heading">
+              My Heading
+            </p>
+            <p class="subtitle d-none" id="front-subheading">
+              My Subheading
+            </p>
+            <p id="front-para" class="d-none">
+              This is a sample paragraph which shows us how a paragraph will appear on the flashcards of this deck.
+            </p>
+            <figure class="image is-128x128 my-4" style="display: none" id="front-img">
+              <img src="https://bulma.io/images/placeholders/128x128.png" id="front-img-pic">
+            </figure>
+          </div>
+        </div>
+
+        <p class="subtitle mt-6 my-3">
+          Back
+        </p>
+        <div class="card">
+          <div class="card-content">
+            <p class="title is-4 d-none" id="back-heading">
+              My Heading
+            </p>
+            <p class="subtitle d-none" id="back-subheading">
+              My Subheading
+            </p>
+            <p id="back-para" class="d-none">
+              This is a sample paragraph which shows us how a paragraph will appear on the flashcards of this deck.
+            </p>
+            <figure class="image is-128x128 my-4" id="back-img" style="display: none">
+              <img src="https://bulma.io/images/placeholders/128x128.png" id="back-img-pic">
+            </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+  deckid = "{{deckid}}";
+</script>
+<script src="/javascripts/createflashcard.js"></script>

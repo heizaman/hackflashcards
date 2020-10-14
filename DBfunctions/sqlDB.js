@@ -36,7 +36,6 @@ funcs.updateFlashcard = function(flashcardid, front, back, repetitions, inter, e
 
 funcs.getDeck = function(deckid, callback) {
 	var qry = 'SELECT * FROM decks WHERE deckid = ?';
-	console.log(deckid);
 
 	db.get().query(qry, [deckid], function(err, result){
 		return callback(err,result);

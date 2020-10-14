@@ -73,6 +73,21 @@ router.post('/createDeck', function(req, res, next) {
 });
 
 
+router.post('/getDeck', function(req, res, next) {
+
+	var deckid = req.body.deckid;
+
+	db.getDeck(deckid, function(err, response){
+		if(err){
+			console.log(err);
+			return res.json({"status": "failed", "message": "Error!" });
+		}
+
+		return res.json({ "status": "success", "message": "getDeck Successful", "decks": response });
+	});
+});
+
+
 router.post('/updateDeck', function(req, res, next) {
 	var deckid = req.body.deckid;
 	var name = req.body.name;

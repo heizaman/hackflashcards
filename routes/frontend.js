@@ -10,16 +10,26 @@ router.get('/createdeck', function(req, res, next) {
   res.render('createdeck');
 });
 
-router.get('/createflashcard', function(req, res, next) {
-  res.render('createflashcard');
+router.get('/createflashcard/:id', function(req, res, next) {
+	if(req.params && req.params.id) {
+		res.render('createflashcard', { deckid : req.params.id });
+	}
+	else {
+		res.render('error');
+	}
 });
 
 router.get('/decks', function(req, res, next) {
   res.render('decks');
 });
 
-router.get('/flashcards', function(req, res, next) {
-  res.render('flashcards');
+router.get('/flashcards/:id', function(req, res, next) {
+    if(req.params && req.params.id) {
+		res.render('flashcards', { deckid : req.params.id });
+	}
+	else {
+		res.render('error');
+	}
 });
 
 router.get('/revise', function(req, res, next) {
