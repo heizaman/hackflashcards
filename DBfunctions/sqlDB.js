@@ -19,12 +19,6 @@ funcs.updateDeck = function(deckid, name, front, back, endDate, callback) {
 }
 
 funcs.createFlashcard = function(deckid, front, back, repetitions, inter, easiness, nextDate, nextDateScaled, callback) {
-	// var qry = 'INSERT INTO flashcards (deckid, front, back, repetitions, interval, easiness, nextDate) VALUES (?, ?, ?, ?, ?, ?, ?)';
-
-	// db.get().query(qry, [deckid, front, back, repetitions, interval, easiness, nextDate], function (err, result) {
-	// 	return callback(err, result);
-	// });
-
 	var qry = 'INSERT INTO flashcards (inter, deckid, front, back, repetitions, easiness, nextDate, nextDateScaled) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
 
 	db.get().query(qry, [inter, deckid, front, back, repetitions, easiness, nextDate, nextDateScaled], function (err, result) {
@@ -33,19 +27,11 @@ funcs.createFlashcard = function(deckid, front, back, repetitions, inter, easine
 }
 
 funcs.updateFlashcard = function(flashcardid, front, back, repetitions, inter, easiness, nextDate, nextDateScaled, callback) {
-	// var qry = 'UPDATE decks SET front = ?, back = ?, repetitions = ?, interval = ?, easiness = ?, nextDate = ? WHERE flashcardid = ?';
-
-	// db.get().query(qry, [front, back, repetitions, interval, easiness, nextDate, flashcardid], function (err, result) {
-	// 	return callback(err, result);
-	// });
-
 	var qry = 'UPDATE flashcards SET front = ?, back = ?, repetitions = ?, inter = ?, easiness = ?, nextDate = ?, nextDateScaled = ? WHERE flashcardid = ?';
 
 	db.get().query(qry, [front, back, repetitions, inter, easiness, nextDate, nextDateScaled, flashcardid], function (err, result) {
 		return callback(err, result);
 	});
-
-
 }
 
 funcs.getDeck = function(deckid, callback) {
@@ -54,7 +40,7 @@ funcs.getDeck = function(deckid, callback) {
 
 	db.get().query(qry, [deckid], function(err, result){
 		return callback(err,result);
-	})
+	});
 }
 
 

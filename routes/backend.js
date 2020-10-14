@@ -7,6 +7,7 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
+
 router.post('/createDeck', function(req, res, next) {
 	var name = req.body.name;
 	var front = req.body.front;
@@ -23,11 +24,14 @@ router.post('/createDeck', function(req, res, next) {
 	if(back == "")
 		return res.json({ "status": "failed", "message": "Invalid back data!"});
 	
+	if(startDate == "")
+		return res.json({ "status": "failed", "message": "Invalid startDate!"});
+
 	if(endDate == "")
 		return res.json({ "status": "failed", "message": "Invalid endDate!"});
 
 
-db.createDeck(name, front, back, startDate, endDate, function (err, rows) {
+	db.createDeck(name, front, back, startDate, endDate, function (err, rows) {
 	    if (err) {
 	    	console.log(err);
 	    	return res.json({ "status": "failed", "message": "Error!" });
@@ -37,12 +41,16 @@ db.createDeck(name, front, back, startDate, endDate, function (err, rows) {
 	});
 });
 
+
 router.post('/updateDeck', function(req, res, next) {
 	var deckid = req.body.deckid;
 	var name = req.body.name;
 	var front = req.body.front;
 	var back = req.body.back;
 	var endDate = req.body.endDate;
+
+	if(deckid == "")
+		return res.json({ "status": "failed", "message": "Invalid DeckId!"});
 
 	if(name == "")
 		return res.json({ "status": "failed", "message": "Please enter a valid name!"});
@@ -86,7 +94,7 @@ router.post('/createFlashcard', function(req, res, next) {
 	var nextDateScaled = nextDate;
 
 	if(deckid == "")
-		return res.json({ "status": "failed", "message": "Please enter a valid deckid!"});
+		return res.json({ "status": "failed", "message": "Invalid deckid!"});
 
 	if(front == "")
 		return res.json({ "status": "failed", "message": "Invalid front data!"});
