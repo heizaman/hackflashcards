@@ -43,5 +43,12 @@ funcs.getDeck = function(deckid, callback) {
 	});
 }
 
+funcs.getFlashcards = function(callback) {
+	var qry = 'SELECT * FROM flashcards';
+	db.get().query(qry, function(err, result){
+		return callback(err, result);
+	})
+}
+
 
 module.exports = funcs;

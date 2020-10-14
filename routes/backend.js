@@ -69,11 +69,64 @@ router.post('/updateDeck', function(req, res, next) {
 	    if (err) {
 	    	console.log(err);
 	    	return res.json({ "status": "failed", "message": "Error!" });
-	    }
+		}
+		
+		changeEndDateScaledForAllFlashcards(endDate);
 
 		return res.json({ "status": "success", "message": "Deck updated successfully" });
 	});
 });
+
+function changeEndDateScaledForAllFlashcards() {
+	db.getFlashcards(function(err,response) {
+		var stringFlashcard = JSON.stringify(response);
+		var jsonFlashcard = JSON.parse(stringFlashcard);
+		var presentDate = new Date();
+
+		for(let i=0;i < jsonFlashcard.length ; i++){
+			 var flashcard = json[i];
+			 db.getDeck(flashcard.deckid, function(err, response){
+				if(err){
+					console.log(err);
+					return res.json({"status": "failed", "message": "Error!" });
+				}
+				var string = JSON.stringify(response);
+				var json = JSON.parse(string);
+		
+				var startDate = json[0].startDate;
+				var endDate = json[0].endDate;
+				console.log("New start and end dates are as follows : ");
+				console.log(startDate);
+				console.log(endDate);
+				startDate = new Date(startDate);
+				endDate = new Date(endDate);
+				console.log(startDate);
+				console.log(endDate);
+				var differenceInTime = endDate.getTime() - startDate.getTime();
+				console.log("The difference in time value is as follows : ");
+				console.log(differenceInTime);
+				var referenceTime = 15778476000;
+				var fraction = differenceInTime / referenceTime;
+				var differenceBetweenNextDateAndPresentDate = flashcard.nextDate.getTime() - presentDate.getTime(); 
+				var nextDateScaled=fraction*differenceBetweenNextDateAndPresentDate;
+				nextDateScaled = new Date(nextDateScaled);
+
+				db.updateFlashcard(flashcard.flashcardid, flashcard.front, flashcard.back, flashcard.repetitions, flashcard.inter, 
+					flashcard.easiness, flashcard.nextDate, nextDateScaled, function (err, rows) {
+					if (err) {
+						console.log(err);
+						// return res.json({ "status": "failed", "message": "Error!" });
+					}
+			
+					// return res.json({ "status": "success", "message": "Deck updated successfully" });
+				});
+
+
+
+		})
+      }
+	})
+}
 
 //JSON
 // {
@@ -216,10 +269,12 @@ router.post('/updateFlashcardDate', function(req, res, next) {
 	var repetitions = flashcard.repetitions;
 	var easiness = flashcard.easiness;
 	var inter = flashcard.inter;
-	var presentDate = flashcard.presentDate;
+	// var presentDate = flashcard.nextDate;
+	var presentDate = new Date();
 	
 	if( quality == 2) {
-		easiness = Math.min(2.5, Math.max(1.3, easiness + 0.1 - ((3.0 - quality)*(0.08 + (3.0 - quality)*0.02))));
+		var temp = 5;
+		easiness = Math.min(2.5, Math.max(1.3, easiness + 0.1 - ((5.0 - temp)*(0.08 + (5.0 - temp)*0.02))));
 	}
 
 	if( quality == 0) {
@@ -242,9 +297,9 @@ router.post('/updateFlashcardDate', function(req, res, next) {
 
 	var millisecondsInDay = 60*60*24*1000;
 	var nextDate = new Date();
-	nextDate += millisecondsInDay*inter;
-	var nextDateScaled = nextDate;
+	nextDate = nextDate.getTime() + millisecondsInDay*inter;
 	nextDate = new Date(nextDate);
+	var nextDateScaled = nextDate;
 	// nextDate = nextDate.getTime();
 
 	db.getDeck(deckid, function(err, response){
@@ -254,31 +309,134 @@ router.post('/updateFlashcardDate', function(req, res, next) {
 		}
 
 		console.log(response);
+		var string = JSON.stringify(response);
+		var json = JSON.parse(string);
+		console.log(json[0]);
 
-		var startDate = response.startDate;
-		var endDate = response.endDate;
+		var startDate = json[0].startDate;
+		var endDate = json[0].endDate;
+		console.log(startDate);
+		console.log(endDate);
+		// startDate = startDate.split(/[- :]/);
+		// startDate[1]--;
+		// endDate = endDate.split(/[- :]/);
+		// endDate[1]--;
+		startDate = new Date(startDate);
+		endDate = new Date(endDate);
+		console.log(startDate);
+		console.log(endDate);
+		// startDate = new Date();
+		// console.log(startDate);
+		// endDate = new Date(startDate.getDate() + 30);
+		// console.log(endDate);
 		var differenceInTime = endDate.getTime() - startDate.getTime();
+		console.log(differenceInTime);
 		var referenceTime = 15778476000;
 		var fraction = differenceInTime / referenceTime;
 		var differenceBetweenNextDateAndPresentDate = nextDate.getTime() - presentDate.getTime(); 
 		nextDateScaled=fraction*differenceBetweenNextDateAndPresentDate;
 		nextDateScaled = new Date(nextDateScaled);
-        if(nextDateScaled  < presentDate || (nextDateScaled.getTime() - presentDate.getTime() <= milliSecondsInDay)) {
+        if(nextDateScaled  < presentDate || (nextDateScaled.getTime() - presentDate.getTime() <= millisecondsInDay)) {
 			nextDateScaled = new Date(presentDate.getTime() + millisecondsInDay)
 		}
+
+		console.log(nextDate);
+		console.log(nextDateScaled);
+
+		db.updateFlashcard(flashcardid, front, back, repetitions, inter, easiness, nextDate, nextDateScaled, function (err, rows) {
+			if (err) {
+				console.log(err);
+				return res.json({ "status": "failed", "message": "Error!" });
+			}
+	
+			return res.json({ "status": "success", "message": "Deck updated successfully" });
+		});
 	})
 
 
-	db.updateFlashcard(flashcardid, front, back, repetitions, inter, easiness, nextDate, nextDateScaled, function (err, rows) {
-	    if (err) {
-	    	console.log(err);
-	    	return res.json({ "status": "failed", "message": "Error!" });
-	    }
+	// db.updateFlashcard(flashcardid, front, back, repetitions, inter, easiness, nextDate, nextDateScaled, function (err, rows) {
+	//     if (err) {
+	//     	console.log(err);
+	//     	return res.json({ "status": "failed", "message": "Error!" });
+	//     }
 
-		return res.json({ "status": "success", "message": "Deck updated successfully" });
-	});
+	// 	return res.json({ "status": "success", "message": "Deck updated successfully" });
+	// });
 
 
+})
+
+
+router.post('/reorderFlashcards', function(req, res, next){
+	var presentDate = new Date();
+	var deckid = req.body.deckid;
+
+	db.getDeck(deckid, function(err, response){
+		if(err){
+			console.log(err);
+			return res.json({"status": "failed", "message": "Error!" });
+		}
+
+		var string = JSON.stringify(response);
+		var json = JSON.parse(string);
+
+		var endDate = json[0].endDate;
+		endDate = new(endDate);
+
+		var leftDays = endDate.getDate() - presentDate.getDate() + 1;
+		db.getFlashcards(function(err,response) {
+			var stringFlashcard = JSON.stringify(response);
+			var jsonFlashcard = JSON.parse(stringFlashcard);
+
+			var totalFlashcards = jsonFlashcard.length;
+			
+			for(let i=0 ; i < totalFlashcards ; i++) {
+				jsonFlashcards[i].nextDate = new Date(jsonFlashcards[i].nextDate);
+			}
+
+			jsonFlashcards.sort(function(a, b){
+				return b.nextDate - a.nextDate;
+			})
+
+			var cardsPerDay = (totalFlashcards / leftDays);
+			var date = presentDate;
+			var index = 0;
+
+			for(let r=1; r <= leftDays ; r++) {
+
+				for(let s=0; s< cardsPerDay ; s++) {
+					jsonFlashcards[index].nextDate.setDate(date.getDate());
+					index++;
+				}
+
+				date.setDate(date.getDate() + 1);
+			}
+
+			var leftCards = totalFlashcards - (leftDays*cardsPerDay);
+			
+			for(let r=1;r<=leftCards;r++){
+				jsonFlashcards[index].nextDate.setDate(date.getDate());
+				index++;
+			}
+
+			for(let r=0;r< totalFlashcards; r++) {
+                 
+				db.updateFlashcard(jsonFlashcards[r].flashcardid, jsonFlashcards[r].front, jsonFlashcards[r].back, jsonFlashcards[r].repetitions, jsonFlashcards[r].inter, 
+					jsonFlashcards[r].easiness, jsonFlashcards[r].nextDate, jsonFlashcards[r].nextDate, function (err, rows) {
+					if (err) {
+						console.log(err);
+						// return res.json({ "status": "failed", "message": "Error!" });
+					}
+			
+					// return res.json({ "status": "success", "message": "Deck updated successfully" });
+				});
+			}
+		})
+	})
+
+
+
+	
 })
 
 module.exports = router;
