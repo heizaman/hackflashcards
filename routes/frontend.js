@@ -6,8 +6,8 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Home' });
 });
 
-router.get('/flashcards', function(req, res, next) {
-  res.render('flashcards');
+router.get('/adddeck', function(req, res, next) {
+  res.render('adddeck');
 });
 
 module.exports = router;
