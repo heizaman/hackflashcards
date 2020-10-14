@@ -43,9 +43,33 @@ funcs.getDeck = function(deckid, callback) {
 	});
 }
 
+funcs.getDecks = function(callback) {
+	var qry = 'SELECT * FROM decks';
+
+	db.get().query(qry, function(err, result){
+		return callback(err,result);
+	});
+}
+
 funcs.getFlashcards = function(callback) {
 	var qry = 'SELECT * FROM flashcards';
 	db.get().query(qry, function(err, result){
+		return callback(err, result);
+	})
+}
+
+funcs.getFlashcardsOfDeck = function(deckid, callback) {
+	var qry = 'SELECT * FROM flashcards WHERE deckid = ?';
+
+	db.get().query(qry, [deckid], function(err, result){
+		return callback(err, result);
+	})
+}
+
+funcs.getFlashcard = function(flashcardid, callback) {
+	var qry = 'SELECT * FROM flashcards WHERE flashcardid = ?';
+
+	db.get().query(qry, [flashcardid], function(err, result){
 		return callback(err, result);
 	})
 }

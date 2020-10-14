@@ -2,6 +2,37 @@ var express = require('express');
 var router = express.Router();
 var db = require('../DBfunctions/sqlDB.js');
 
+
+/* GET apis */
+
+router.get('/getDecks', function(req, res, next) {
+	db.getDecks(function(err, response){
+		response.sort(function(a,b){
+			return a.startDate - b.startDate;
+		})
+		return res.json({"status" : "Decks fetched successfully", "result" : response});
+	})
+})
+
+router.get('/getFlashcards/:deckid', function(req, res, next){
+	var deckid = req.params.deckid;
+	db.getFlashcardsOfDeck(deckid, function(err, response){
+		response.sort(function(a,b){
+			return a.nextDate - b.nextDate;
+		})
+		return res.json({"status": "Flashcards fetched successfully", "result": response});
+	})
+})
+
+router.get('/getFlashcard/:flashcardid', function(req, res, next){
+	var flashcardid = req.params.flashcardid;
+	db.getFlashcard(flashcardid, function(err, response){
+		return res.json({"status": "Flashcard fetched successfully", "result": response});
+	})
+})
+
+
+
 /* POST apis. */
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
