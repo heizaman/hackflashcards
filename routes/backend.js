@@ -146,18 +146,26 @@ function changeEndDateScaledForAllFlashcards(deckid) {
 	    	return res.json({ "status": "failed", "message": "Failed to get all flashcards from DB" });
 		}
 
-		console.log("The result after fetching flashcards is : " + response);
+
+		console.log("The result after fetching flashcards is : ");
+		console.log(response);
 		
 
 		var stringFlashcard = JSON.stringify(response);
 		var jsonFlashcard = JSON.parse(stringFlashcard);
 
-		console.log("The result after conversion is : " + response);
+		console.log("The result after conversion is : ");
+
+		console.log(jsonFlashcard);
 
 
 		for(let i=0;i < jsonFlashcard.length ; i++){
-			 var flashcard = json[i];
+			 var flashcard = jsonFlashcard[i];
 			 var presentDate = new Date();
+			 var nextDate = new Date(flashcard.nextDate);
+			 var nxtDateScaled = new Date(flashcard.nextDate);
+			 console.log("Next date scaled previously");
+			 console.log(nxtDateScaled);
 			 db.getDeck(flashcard.deckid, function(err, response){
 				if(err){
 					console.log(err);
@@ -178,10 +186,10 @@ function changeEndDateScaledForAllFlashcards(deckid) {
 				console.log(differenceInTime);
 				var referenceTime = 15778476000;
 				var fraction = differenceInTime / referenceTime;
-				var differenceBetweenNextDateAndPresentDate = abs(flashcard.nextDate.getTime() - presentDate.getTime()); 
+				var differenceBetweenNextDateAndPresentDate = Math.abs(nextDate.getTime() - presentDate.getTime()); 
 				var nextDateScaled=fraction*differenceBetweenNextDateAndPresentDate;
 
-                if(flashcard.nextDate.getTime() - presentDate.getTime() >=0) {
+                if(nextDate.getTime() - presentDate.getTime() >=0) {
 					nextDateScaled = new Date(presentDate.getTime() + nextDateScaled);
 				}
 
@@ -189,9 +197,12 @@ function changeEndDateScaledForAllFlashcards(deckid) {
 					nextDateScaled = new Date(presentDate.getTime() - nextDateScaled);
 				}
 
+				console.log("Next data scaled now");
+				console.log(nextDateScaled);
+
 
 				db.updateFlashcard(flashcard.flashcardid, flashcard.front, flashcard.back, flashcard.repetitions, flashcard.inter, 
-					flashcard.easiness, flashcard.nextDate, nextDateScaled, function (err, rows) {
+					flashcard.easiness, nextDate, nextDateScaled, function (err, rows) {
 					if (err) {
 						console.log(err);
 						return false;
@@ -206,6 +217,8 @@ function changeEndDateScaledForAllFlashcards(deckid) {
 		console.log("One Deck completed !!");
       }
 	})
+
+	return true;
 }
 
 //JSON
