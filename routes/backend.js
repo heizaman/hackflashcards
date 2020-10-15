@@ -31,14 +31,31 @@ router.get('/getFlashcard/:flashcardid', function(req, res, next){
 	})
 })
 
+router.post('/getDeck', function(req, res, next) {
 
+	var deckid = req.body.deckid;
 
-/* POST apis. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+	db.getDeck(deckid, function(err, response){
+		if(err){
+			console.log(err);
+			return res.json({"status": "failed", "message": "Error!" });
+		}
+
+		return res.json({ "status": "success", "message": "getDeck Successful", "decks": response });
+	});
 });
 
 
+
+/* POST apis. */
+
+//JSON
+// {
+//     "name" : "test11",
+//     "front" : "{}",
+//     "back"  : "{}",
+//     "endDate" : "2020-10-27 13:13:54.0"
+// }
 router.post('/createDeck', function(req, res, next) {
 	var name = req.body.name;
 	var front = req.body.front;
@@ -62,31 +79,26 @@ router.post('/createDeck', function(req, res, next) {
 		return res.json({ "status": "failed", "message": "Invalid endDate!"});
 
 
-	db.createDeck(name, front, back, startDate, endDate, function (err, rows) {
+	db.createDeck(name, front, back, startDate, endDate, function (err, response) {
 	    if (err) {
 	    	console.log(err);
 	    	return res.json({ "status": "failed", "message": "Error!" });
 	    }
 
-		return res.json({ "status": "success", "message": "Deck added successfully" });
+		return res.json({ "status": "success", "message": "Deck added successfully", "deck" : response });
 	});
 });
 
 
-router.post('/getDeck', function(req, res, next) {
 
-	var deckid = req.body.deckid;
-
-	db.getDeck(deckid, function(err, response){
-		if(err){
-			console.log(err);
-			return res.json({"status": "failed", "message": "Error!" });
-		}
-
-		return res.json({ "status": "success", "message": "getDeck Successful", "decks": response });
-	});
-});
-
+//JSON
+// {
+//     "deckid" : "17",
+//     "name" : "test11",
+//     "front" : "{}",
+//     "back"  : "{}",
+//     "endDate" : "2021-10-27 13:13:54.0"
+// }
 
 router.post('/updateDeck', function(req, res, next) {
 	var deckid = req.body.deckid;
@@ -111,41 +123,54 @@ router.post('/updateDeck', function(req, res, next) {
 		return res.json({ "status": "failed", "message": "Invalid endDate!"});
 
 
-	db.updateDeck(deckid, name, front, back, endDate, function (err, rows) {
+	db.updateDeck(deckid, name, front, back, endDate, function (err, response) {
 	    if (err) {
 	    	console.log(err);
 	    	return res.json({ "status": "failed", "message": "Error!" });
 		}
 		
-		changeEndDateScaledForAllFlashcards(endDate);
+		var response = changeEndDateScaledForAllFlashcards(deckid);
+		if(!response){
+			res.json({"status": "failure", "message": "Unable to change EndDate of flashcards"})
+		}
 
-		return res.json({ "status": "success", "message": "Deck updated successfully" });
+		return res.json({ "status": "success", "message": "Deck updated successfully", "response" : response });
 	});
 });
 
-function changeEndDateScaledForAllFlashcards() {
-	db.getFlashcards(function(err,response) {
+function changeEndDateScaledForAllFlashcards(deckid) {
+	db.getFlashcardsOfDeck(deckid, function(err,response) {
+		
+		if(err) {
+			console.log(err);
+	    	return res.json({ "status": "failed", "message": "Failed to get all flashcards from DB" });
+		}
+
+		console.log("The result after fetching flashcards is : " + response);
+		
+
 		var stringFlashcard = JSON.stringify(response);
 		var jsonFlashcard = JSON.parse(stringFlashcard);
-		var presentDate = new Date();
+
+		console.log("The result after conversion is : " + response);
+
 
 		for(let i=0;i < jsonFlashcard.length ; i++){
 			 var flashcard = json[i];
+			 var presentDate = new Date();
 			 db.getDeck(flashcard.deckid, function(err, response){
 				if(err){
 					console.log(err);
-					return res.json({"status": "failed", "message": "Error!" });
+					return res.json({"status": "failed", "message": "Unable to fetch deck" });
 				}
 				var string = JSON.stringify(response);
 				var json = JSON.parse(string);
 		
 				var startDate = json[0].startDate;
 				var endDate = json[0].endDate;
-				console.log("New start and end dates are as follows : ");
-				console.log(startDate);
-				console.log(endDate);
 				startDate = new Date(startDate);
 				endDate = new Date(endDate);
+				console.log("The end and start dates are as follows : ");
 				console.log(startDate);
 				console.log(endDate);
 				var differenceInTime = endDate.getTime() - startDate.getTime();
@@ -153,23 +178,32 @@ function changeEndDateScaledForAllFlashcards() {
 				console.log(differenceInTime);
 				var referenceTime = 15778476000;
 				var fraction = differenceInTime / referenceTime;
-				var differenceBetweenNextDateAndPresentDate = flashcard.nextDate.getTime() - presentDate.getTime(); 
+				var differenceBetweenNextDateAndPresentDate = abs(flashcard.nextDate.getTime() - presentDate.getTime()); 
 				var nextDateScaled=fraction*differenceBetweenNextDateAndPresentDate;
-				nextDateScaled = new Date(nextDateScaled);
+
+                if(flashcard.nextDate.getTime() - presentDate.getTime() >=0) {
+					nextDateScaled = new Date(presentDate.getTime() + nextDateScaled);
+				}
+
+				else {
+					nextDateScaled = new Date(presentDate.getTime() - nextDateScaled);
+				}
+
 
 				db.updateFlashcard(flashcard.flashcardid, flashcard.front, flashcard.back, flashcard.repetitions, flashcard.inter, 
 					flashcard.easiness, flashcard.nextDate, nextDateScaled, function (err, rows) {
 					if (err) {
 						console.log(err);
+						return false;
 						// return res.json({ "status": "failed", "message": "Error!" });
 					}
 			
 					// return res.json({ "status": "success", "message": "Deck updated successfully" });
 				});
 
-
-
 		})
+
+		console.log("One Deck completed !!");
       }
 	})
 }
@@ -188,7 +222,7 @@ router.post('/createFlashcard', function(req, res, next) {
 	
 	var repetitions = 0;
 	var inter = 1;
-	var easiness = 1.8;
+	var easiness = 1.3;
 	var nextDate = new Date();
 	var nextDateScaled = nextDate;
 
@@ -299,7 +333,8 @@ router.post('/updateFlashcardContent', function(req, res, next) {
 router.post('/updateFlashcardDate', function(req, res, next) {
 	var flashcard = req.body.flashcard;
 	var quality = req.body.quality;
-
+	
+	console.log("The flashcard content is as follows : ");
 	console.log(flashcard);
 	
 	if (quality < 0 || quality > 2) {
@@ -307,16 +342,17 @@ router.post('/updateFlashcardDate', function(req, res, next) {
 	}
 
 	var flashcardid = flashcard.flashcardid;
-	console.log(flashcardid);
 	var deckid = flashcard.deckid;
-	console.log(deckid);
 	var front = flashcard.front;
 	var back = flashcard.back;
 	var repetitions = flashcard.repetitions;
 	var easiness = flashcard.easiness;
 	var inter = flashcard.inter;
+	var nextDateScaled = flashcard.nextDateScaled;
+	var nextDate = new Date(flashcard.nextDate);
 	// var presentDate = flashcard.nextDate;
-	var presentDate = new Date();
+	var presentDate = new Date(nextDateScaled);
+    var millisecondsInDay = 60*60*24*1000;
 	
 	if( quality == 2) {
 		var temp = 5;
@@ -341,10 +377,11 @@ router.post('/updateFlashcardDate', function(req, res, next) {
 		inter = Math.round(inter*easiness);
 	}
 
-	var millisecondsInDay = 60*60*24*1000;
-	var nextDate = new Date();
-	nextDate = nextDate.getTime() + millisecondsInDay*inter;
+	// var nextDate = new Date();
+	console.log("The nextDate value before updation is : " + flashcard.nextDate);
+	var nextDate = nextDate.getTime() + millisecondsInDay*inter;
 	nextDate = new Date(nextDate);
+	console.log("The nextDate value after updation is : " + nextDate);
 	var nextDateScaled = nextDate;
 	// nextDate = nextDate.getTime();
 
@@ -353,16 +390,18 @@ router.post('/updateFlashcardDate', function(req, res, next) {
 			console.log(err);
 			return res.json({"status": "failed", "message": "Error!" });
 		}
-
+		
+		console.log("The response of the getDeck is : ");
 		console.log(response);
 		var string = JSON.stringify(response);
 		var json = JSON.parse(string);
-		console.log(json[0]);
 
 		var startDate = json[0].startDate;
 		var endDate = json[0].endDate;
-		console.log(startDate);
-		console.log(endDate);
+
+		console.log("The values of startDate and endDate are : ");
+		// console.log(startDate);
+		// console.log(endDate);
 		// startDate = startDate.split(/[- :]/);
 		// startDate[1]--;
 		// endDate = endDate.split(/[- :]/);
@@ -371,21 +410,48 @@ router.post('/updateFlashcardDate', function(req, res, next) {
 		endDate = new Date(endDate);
 		console.log(startDate);
 		console.log(endDate);
+
+		if( (endDate.getTime() - presentDate.getTime() < millisecondsInDay) ) {
+            return res.json({"status": "Success", "message" : "204" , "meaning" : "Card already read on last day"});
+		}
 		// startDate = new Date();
 		// console.log(startDate);
 		// endDate = new Date(startDate.getDate() + 30);
 		// console.log(endDate);
 		var differenceInTime = endDate.getTime() - startDate.getTime();
+		console.log("The difference in time value : ");
 		console.log(differenceInTime);
 		var referenceTime = 15778476000;
 		var fraction = differenceInTime / referenceTime;
-		var differenceBetweenNextDateAndPresentDate = nextDate.getTime() - presentDate.getTime(); 
+		console.log("The fraction value is : " + fraction);
+		var differenceBetweenNextDateAndPresentDate = nextDate.getTime() - presentDate.getTime();
+		console.log("The difference between nextDate and presentDate is : " + differenceBetweenNextDateAndPresentDate);
 		nextDateScaled=fraction*differenceBetweenNextDateAndPresentDate;
-		nextDateScaled = new Date(nextDateScaled);
+		console.log("The scaled difference between nextDate and presentDate is : " + nextDateScaled);
+		nextDateScaled = new Date(presentDate.getTime() + nextDateScaled);
+		console.log("Value of nextDateScaled is : " + nextDateScaled);
         if(nextDateScaled  < presentDate || (nextDateScaled.getTime() - presentDate.getTime() <= millisecondsInDay)) {
+			console.log("nextDateScaled coming to same day, therefore shifting to next day : ");
 			nextDateScaled = new Date(presentDate.getTime() + millisecondsInDay)
+			nextDateScaled.setHours(0,0,0,0);
+			console.log(nextDateScaled);
 		}
 
+		if(nextDateScaled.getTime() - endDate.getTime() > 0){
+			console.log("Problem that card is shifting ahead of last day ");
+			if(quality == 2) {
+				nextDateScaled = endDate;
+				nextDateScaled.setHours(9,0,0,0);
+			} else if(quality == 1) {
+				nextDateScaled = endDate;
+				nextDateScaled.setHours(8,0,0,0);
+			} else {
+				nextDateScaled = endDate;
+				nextDateScaled.setHours(7,0,0,0);
+			}
+		}
+
+        console.log("The final values of nextDate and nextDateScaled are : ");
 		console.log(nextDate);
 		console.log(nextDateScaled);
 

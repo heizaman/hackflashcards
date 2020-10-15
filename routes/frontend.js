@@ -19,10 +19,12 @@ router.get('/createflashcard/:id', function(req, res, next) {
 	}
 });
 
+//This is similar to getDecks in backend
 router.get('/decks', function(req, res, next) {
   res.render('decks');
 });
 
+//Similar to /getFlashcards/deckid
 router.get('/flashcards/:id', function(req, res, next) {
     if(req.params && req.params.id) {
 		res.render('flashcards', { deckid : req.params.id });
