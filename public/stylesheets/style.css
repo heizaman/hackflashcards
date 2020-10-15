@@ -10,3 +10,14 @@ a {
 .d-none {
 	display: none;
 }
+
+#tableOfDecks {
+  padding-left: 30px;
+  padding-right: 30px;
+  margin-left: 50px;
+  margin-right: 50px;
+}
+
+.allDecksHeading {
+  font-size: xx-large;
+} 
