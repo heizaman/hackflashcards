@@ -21,3 +21,18 @@ a {
 .allDecksHeading {
   font-size: xx-large;
 } 
+
+.card {
+  width: 40rem;
+  margin-top: 2rem;
+  
+}
+
+.frontOfCard {
+  background-color: #c4eeff;
+  border: 1px solid;
+}
+
+.frontOfCard {
+  border: 1px solid;
+}
