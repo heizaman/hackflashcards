@@ -1,0 +1,27 @@
+{{> header}}
+<link rel='stylesheet' href='/stylesheets/styleforrevise.css' />
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<body>
+<!-- partial:index.partial.html -->
+<div class="columns is-vcentered">
+    <div class="column is-8">
+        <label class = "reviselabel">
+            <input type="checkbox" class = "revisecheckbox"/>
+            <div class="revisecard">
+                <div class="revisefront" id = "cardfront"></div>
+                <div class="reviseback" id = "cardback"></div>
+            </div>
+        </label>
+    </div>
+    <div class="column" id="easiness">
+        <button class="button is-success" onclick="displayFlashcards()">Easy</button>
+        <button class="button is-warning" onclick="displayFlashcards()">Medium</button>
+        <button class="button is-danger" onclick="displayFlashcards()">Hard</button>
+    </div>
+</div>
+<!-- partial -->
+</body>
+<script type="text/javascript">
+  deckid = "{{deckid}}";
+</script>
+<script src="/javascripts/revise.js"></script>

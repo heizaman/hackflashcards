@@ -22,7 +22,7 @@ a {
   font-size: xx-large;
 } 
 
-.card {
+.flashcardShow{
   width: 40rem;
   margin-top: 2rem;
   
@@ -33,6 +33,6 @@ a {
   border: 1px solid;
 }
 
-.frontOfCard {
+.backOfCard {
   border: 1px solid;
 }

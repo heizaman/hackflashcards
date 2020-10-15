@@ -19,11 +19,13 @@ $(document).ready(function(){
    
    for(var i=0;i< decks.length;i++){
       console.log(decks[i].deckid);
-      var url = '/flashcards/'+decks[i].deckid;
+      var linkToFlashCards = '/flashcards/'+ decks[i].deckid;
+      var revise = '/revise/' +  decks[i].deckid;
       var deck ='';
       deck += '<tr>';
-      deck += `<td><a href = ${url}>` + decks[i].name + '</a></td>';
+      deck += `<td><a href = ${linkToFlashCards}>` + decks[i].name + '</a></td>';
       deck += '<td>' + getDateFromTimeStamp(decks[i].endDate) + '</td>';
+      deck += `<td><button class ="button button is-light"><a href = ${revise}>` + 'REVISE' + '</button></a></td>';
       deck +='</a></tr>';
       $('#tableOfDecks').append(deck);
 

@@ -50,7 +50,7 @@ function showFlashcardsOfDeck(flashcards) {
         cardBack += '</div>';
         console.log(back);
 
-        var flashcard = '<div class="card">';
+        var flashcard = '<div class="card flashcardShow">';
         flashcard += cardFront;
         flashcard += cardBack;
         flashcard += '</div>';

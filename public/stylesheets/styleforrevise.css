@@ -1,0 +1,73 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+
+.reviselabel {
+  -webkit-perspective: 1000px;
+  perspective: 1000px;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  display: block;
+  width: 500px;
+  height: 500px;
+  position: absolute;
+  left: 35%;
+  top: 55%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+
+.revisecard {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  -webkit-transition: all 600ms;
+  transition: all 600ms;
+  z-index: 20;
+}
+
+.revisecard div {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background: #c4eeff;
+  text-align: center;
+  line-height: 200px;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 2px;
+}
+
+.revisecard .reviseback {
+  background: #222;
+  color: #FFF;
+  -webkit-transform: rotateX(180deg);
+  transform: rotateX(180deg);
+}
+
+.reviselabel:hover .revisecard {
+  -webkit-transform: rotateX(20deg);
+  transform: rotateX(20deg);
+  box-shadow: 0 20px 20px rgba(50, 50, 50, 0.2);
+}
+
+.revisecheckbox {
+  display: none;
+}
+
+.revisecheckbox:checked + .revisecard {
+  transform: rotateX(180deg);
+  -webkit-transform: rotateX(180deg);
+}
+
+.reviseabel:hover .revisecheckbox:checked + .revisecard {
+  transform: rotateX(160deg);
+  -webkit-transform: rotateX(160deg);
+  box-shadow: 0 20px 20px rgba(255, 255, 255, 0.2);
+}
+
+#easiness {
+  align-items: center;
+  margin-top: 10rem;
+}

@@ -34,8 +34,13 @@ router.get('/flashcards/:id', function(req, res, next) {
 	}
 });
 
-router.get('/revise', function(req, res, next) {
-  res.render('revise');
+router.get('/revise/:id', function(req, res, next) {
+    if(req.params && req.params.id) {
+		res.render('revise', { deckid : req.params.id });
+	}
+	else {
+		res.render('error');
+	}
 });
 
 module.exports = router;
