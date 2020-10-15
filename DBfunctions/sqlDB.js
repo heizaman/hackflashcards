@@ -26,10 +26,9 @@ funcs.createFlashcard = function(deckid, front, back, repetitions, inter, easine
 	});
 }
 
-funcs.updateFlashcard = function(flashcardid, front, back, repetitions, inter, easiness, nextDate, nextDateScaled, display, callback) {
-	var qry = 'UPDATE flashcards SET front = ?, back = ?, repetitions = ?, inter = ?, easiness = ?, nextDate = ?, nextDateScaled = ?, display = ? WHERE flashcardid = ?';
-
-	db.get().query(qry, [front, back, repetitions, inter, easiness, nextDate, nextDateScaled, display, flashcardid], function (err, result) {
+funcs.updateFlashcard = function(flashcardid, front, back, repetitions, inter, easiness, nextDate, nextDateScaled, callback) {
+	var qry = 'UPDATE flashcards SET front = ?, back = ?, repetitions = ?, inter = ?, easiness = ?, nextDate = ?, nextDateScaled = ? WHERE flashcardid = ?';
+	db.get().query(qry, [front, back, repetitions, inter, easiness, nextDate, nextDateScaled, flashcardid], function (err, result) {
 		return callback(err, result);
 	});
 }

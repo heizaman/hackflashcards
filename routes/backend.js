@@ -93,8 +93,8 @@ router.post('/createDeck', function(req, res, next) {
 
 //JSON
 // {
-//     "deckid" : "17",
-//     "name" : "test11",
+//     "deckid" : "24",
+//     "name" : "akshay-5",
 //     "front" : "{}",
 //     "back"  : "{}",
 //     "endDate" : "2021-10-27 13:13:54.0"
@@ -159,64 +159,135 @@ function changeEndDateScaledForAllFlashcards(deckid) {
 		console.log(jsonFlashcard);
 
 
-		for(let i=0;i < jsonFlashcard.length ; i++){
-			 var flashcard = jsonFlashcard[i];
-			 var presentDate = new Date();
-			 var nextDate = new Date(flashcard.nextDate);
-			 var nxtDateScaled = new Date(flashcard.nextDate);
-			 console.log("Next date scaled previously");
-			 console.log(nxtDateScaled);
-			 db.getDeck(flashcard.deckid, function(err, response){
-				if(err){
-					console.log(err);
-					return res.json({"status": "failed", "message": "Unable to fetch deck" });
-				}
-				var string = JSON.stringify(response);
-				var json = JSON.parse(string);
+	// 	for(let i=0;i < jsonFlashcard.length ; i++){
+	// 		 var flashcard = jsonFlashcard[i];
+	// 		 var presentDate = new Date();
+	// 		 var nextDate = new Date(flashcard.nextDate);
+	// 		 var nxtDateScaled = new Date(flashcard.nextDate);
+	// 		 console.log("Next date scaled previously");
+	// 		 console.log(nxtDateScaled);
+	// 		 db.getDeck(jsonFlashcard[i].deckid, function(err, response){
+	// 			if(err){
+	// 				console.log(err);
+	// 				return res.json({"status": "failed", "message": "Unable to fetch deck" });
+	// 			}
+	// 			var string = JSON.stringify(response);
+	// 			var json = JSON.parse(string);
 		
-				var startDate = json[0].startDate;
-				var endDate = json[0].endDate;
-				startDate = new Date(startDate);
-				endDate = new Date(endDate);
-				console.log("The end and start dates are as follows : ");
-				console.log(startDate);
-				console.log(endDate);
-				var differenceInTime = endDate.getTime() - startDate.getTime();
-				console.log("The difference in time value is as follows : ");
-				console.log(differenceInTime);
-				var referenceTime = 15778476000;
-				var fraction = differenceInTime / referenceTime;
-				var differenceBetweenNextDateAndPresentDate = Math.abs(nextDate.getTime() - presentDate.getTime()); 
-				var nextDateScaled=fraction*differenceBetweenNextDateAndPresentDate;
+	// 			var startDate = json[0].startDate;
+	// 			var endDate = json[0].endDate;
+	// 			startDate = new Date(startDate);
+	// 			endDate = new Date(endDate);
+	// 			console.log("The end and start dates are as follows : ");
+	// 			console.log(startDate);
+	// 			console.log(endDate);
+	// 			var differenceInTime = endDate.getTime() - startDate.getTime();
+	// 			console.log("The difference in time value is as follows : ");
+	// 			console.log(differenceInTime);
+	// 			var referenceTime = 15778476000;
+	// 			var fraction = differenceInTime / referenceTime;
+	// 			var differenceBetweenNextDateAndPresentDate = Math.abs(nextDate.getTime() - presentDate.getTime()); 
+	// 			var nextDateScaled=fraction*differenceBetweenNextDateAndPresentDate;
 
-                if(nextDate.getTime() - presentDate.getTime() >=0) {
-					nextDateScaled = new Date(presentDate.getTime() + nextDateScaled);
-				}
+    //             if(nextDate.getTime() - presentDate.getTime() >=0) {
+	// 				nextDateScaled = new Date(presentDate.getTime() + nextDateScaled);
+	// 			}
 
-				else {
-					nextDateScaled = new Date(presentDate.getTime() - nextDateScaled);
-				}
+	// 			else {
+	// 				nextDateScaled = new Date(presentDate.getTime() - nextDateScaled);
+	// 			}
 
-				console.log("Next data scaled now");
-				console.log(nextDateScaled);
+	// 			console.log("Next data scaled now");
+	// 			console.log(nextDateScaled);
 
 
-				db.updateFlashcard(flashcard.flashcardid, flashcard.front, flashcard.back, flashcard.repetitions, flashcard.inter, 
-					flashcard.easiness, nextDate, nextDateScaled, function (err, rows) {
-					if (err) {
-						console.log(err);
-						return false;
-						// return res.json({ "status": "failed", "message": "Error!" });
-					}
+	// 			db.updateFlashcard(flashcard.flashcardid, flashcard.front, flashcard.back, flashcard.repetitions, flashcard.inter, 
+	// 				flashcard.easiness, nextDate, nextDateScaled, function (err, rows) {
+	// 				if (err) {
+	// 					console.log(err);
+	// 					return false;
+	// 					// return res.json({ "status": "failed", "message": "Error!" });
+	// 				}
+
+	// 				// console.log("Inside callback");
 			
-					// return res.json({ "status": "success", "message": "Deck updated successfully" });
+	// 				// return res.json({ "status": "success", "message": "Deck updated successfully" });
+	// 			});
+
+	// 	})
+
+	// 	console.log("One Deck completed !!");
+	// 	setTimeout(function(){ console.log("Hello"); }, 3000);
+
+    //   }
+	// })
+
+	db.getDeck(deckid, function(err, response){
+					if(err){
+						console.log(err);
+						return res.json({"status": "failed", "message": "Unable to fetch deck" });
+					}
+					var string = JSON.stringify(response);
+					var json = JSON.parse(string);
+			
+					var startDate = json[0].startDate;
+					var endDate = json[0].endDate;
+					startDate = new Date(startDate);
+					endDate = new Date(endDate);
+					console.log("The end and start dates are as follows : ");
+					console.log(startDate);
+					console.log(endDate);
+					var differenceInTime = endDate.getTime() - startDate.getTime();
+					console.log("The difference in time value is as follows : ");
+					console.log(differenceInTime);
+					var referenceTime = 15778476000;
+					var fraction = differenceInTime / referenceTime;
+
+
+					for(let i=0;i < jsonFlashcard.length ; i++){
+						var flashcard = jsonFlashcard[i];
+						var presentDate = new Date();
+						var nextDate = new Date(flashcard.nextDate);
+						var nxtDateScaled = new Date(flashcard.nextDate);
+						console.log("Next date scaled previously");
+						console.log(nxtDateScaled);
+
+						var differenceBetweenNextDateAndPresentDate = Math.abs(nextDate.getTime() - presentDate.getTime()); 
+						var nextDateScaled=fraction*differenceBetweenNextDateAndPresentDate;
+
+						if(nextDate.getTime() - presentDate.getTime() >=0) {
+							nextDateScaled = new Date(presentDate.getTime() + nextDateScaled);
+						}
+
+						else {
+							nextDateScaled = new Date(presentDate.getTime() - nextDateScaled);
+						}
+
+						console.log("Next data scaled now");
+						console.log(nextDateScaled);
+
+
+						db.updateFlashcard(flashcard.flashcardid, flashcard.front, flashcard.back, flashcard.repetitions, flashcard.inter, 
+							flashcard.easiness, nextDate, nextDateScaled, function (err, rows) {
+							if (err) {
+								console.log(err);
+								return false;
+								// return res.json({ "status": "failed", "message": "Error!" });
+							}
+
+							// console.log("Inside callback");
+					
+							// return res.json({ "status": "success", "message": "Deck updated successfully" });
 				});
 
-		})
 
-		console.log("One Deck completed !!");
-      }
+					
+
+		}
 	})
+})
+
+
 
 	return true;
 }
@@ -341,6 +412,20 @@ router.post('/updateFlashcardContent', function(req, res, next) {
 //         "nextDateScaled" : "2020-10-14 13:29:40.0"
 //     },
 //     "quality" : "2"
+// }
+
+
+// {
+// 	"flashcardid": 23,
+// 	"deckid": 24,
+// 	"front": "{}",
+// 	"back": "{}",
+// 	"repetitions": 0,
+// 	"easiness": 1.3,
+// 	"nextDate": "2020-10-15T10:22:59.000Z",
+// 	"inter": 1,
+// 	"nextDateScaled": "2020-10-15T10:22:59.000Z",
+// 	"display": 1
 // }
 
 

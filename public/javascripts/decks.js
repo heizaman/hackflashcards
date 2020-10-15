@@ -35,5 +35,5 @@ $(document).ready(function(){
    var month_number = endDate.substring(5,7);
    var months_arr = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
    var day = endDate.substring(8,10);
-   return day + '-' + months_arr[month_number] + '-' + year;
+   return day + '-' + months_arr[month_number-1] + '-' + year;
  }
