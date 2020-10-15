@@ -598,7 +598,7 @@ router.post('/reorderFlashcards', function(req, res, next){
 		console.log(json);
 
 		var endDate = json[0].endDate;
-		endDate = new(endDate);
+		endDate = new Date(endDate);
 
 		var leftDays = endDate.getDate() - presentDate.getDate() + 1;
 		db.getFlashcardsOfDeck(deckid, function(err,response) {
@@ -610,19 +610,18 @@ router.post('/reorderFlashcards', function(req, res, next){
 			response.sort(function(a, b){
 				return a.nextDate - b.nextDate;
 			})
+
 			
 			var stringFlashcard = JSON.stringify(response);
-			var jsonFlashcard = JSON.parse(stringFlashcard);
+			var jsonFlashcards = JSON.parse(stringFlashcard);
 
-			var totalFlashcards = jsonFlashcard.length;
+			var totalFlashcards = jsonFlashcards.length;
 			
 			for(let i=0 ; i < totalFlashcards ; i++) {
 				jsonFlashcards[i].nextDate = new Date(jsonFlashcards[i].nextDate);
 			}
 
-			// jsonFlashcards.sort(function(a, b){
-			// 	return a.nextDate - b.nextDate;
-			// })
+
 
 			if(totalFlashcards <= leftDays) {
 				var date = presentDate;
@@ -659,20 +658,21 @@ router.post('/reorderFlashcards', function(req, res, next){
 			}
 		}
 
+
 			for(let r=0;r< totalFlashcards; r++) {
                  
 				db.updateFlashcard(jsonFlashcards[r].flashcardid, jsonFlashcards[r].front, jsonFlashcards[r].back, jsonFlashcards[r].repetitions, jsonFlashcards[r].inter, 
-					jsonFlashcards[r].easiness, jsonFlashcards[r].nextDate, jsonFlashcards[r].nextDate, jsonFlashcards[r].display, function (err, rows) {
+					jsonFlashcards[r].easiness, jsonFlashcards[r].nextDate, jsonFlashcards[r].nextDate, function (err, rows) {
 					if (err) {
 						console.log(err);
-						// return res.json({ "status": "failed", "message": "Error!" });
+						return res.json({ "status": "failed", "message": "Error!" });
 					}
-			
-					// return res.json({ "status": "success", "message": "Deck updated successfully" });
 				});
 			}
 		})
 	})
+
+	res.json({ "status": "success", "message": "Deck reordered successfully" });
 
 
 
