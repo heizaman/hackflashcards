@@ -18,18 +18,18 @@ funcs.updateDeck = function(deckid, name, front, back, endDate, callback) {
 	});
 }
 
-funcs.createFlashcard = function(deckid, front, back, repetitions, inter, easiness, nextDate, nextDateScaled, callback) {
-	var qry = 'INSERT INTO flashcards (inter, deckid, front, back, repetitions, easiness, nextDate, nextDateScaled) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+funcs.createFlashcard = function(deckid, front, back, repetitions, inter, easiness, nextDate, nextDateScaled, display, callback) {
+	var qry = 'INSERT INTO flashcards (inter, deckid, front, back, repetitions, easiness, nextDate, nextDateScaled, display) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
-	db.get().query(qry, [inter, deckid, front, back, repetitions, easiness, nextDate, nextDateScaled], function (err, result) {
+	db.get().query(qry, [inter, deckid, front, back, repetitions, easiness, nextDate, nextDateScaled, display], function (err, result) {
 		return callback(err, result);
 	});
 }
 
-funcs.updateFlashcard = function(flashcardid, front, back, repetitions, inter, easiness, nextDate, nextDateScaled, callback) {
-	var qry = 'UPDATE flashcards SET front = ?, back = ?, repetitions = ?, inter = ?, easiness = ?, nextDate = ?, nextDateScaled = ? WHERE flashcardid = ?';
+funcs.updateFlashcard = function(flashcardid, front, back, repetitions, inter, easiness, nextDate, nextDateScaled, display, callback) {
+	var qry = 'UPDATE flashcards SET front = ?, back = ?, repetitions = ?, inter = ?, easiness = ?, nextDate = ?, nextDateScaled = ?, display = ? WHERE flashcardid = ?';
 
-	db.get().query(qry, [front, back, repetitions, inter, easiness, nextDate, nextDateScaled, flashcardid], function (err, result) {
+	db.get().query(qry, [front, back, repetitions, inter, easiness, nextDate, nextDateScaled, display, flashcardid], function (err, result) {
 		return callback(err, result);
 	});
 }
@@ -59,6 +59,7 @@ funcs.getFlashcards = function(callback) {
 
 funcs.getFlashcardsOfDeck = function(deckid, callback) {
 	var qry = 'SELECT * FROM flashcards WHERE deckid = ?';
+	console.log(deckid);
 
 	db.get().query(qry, [deckid], function(err, result){
 		return callback(err, result);
