@@ -431,6 +431,7 @@ router.post('/updateFlashcardContent', function(req, res, next) {
 
 
 router.post('/updateFlashcardDate', function(req, res, next) {
+	console.log("inside backend js");
 	var flashcard = req.body.flashcard;
 	var quality = req.body.quality;
 	

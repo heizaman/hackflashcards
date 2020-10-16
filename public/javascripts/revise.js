@@ -8,7 +8,7 @@ $(document).ready(function(){
             console.log(response.result);
             flashcards = response.result;
             todaysCards =  getTodaysCards(response.result);
-            displayFlashcards();
+            displayFirstCard();
        },
        error: function(xhr, status, err) {
           console.log(err.toString());
@@ -22,7 +22,6 @@ function getTodaysCards(flashcards) {
     var todaysCards = [];
     for(var i=0; i<flashcards.length; i++) {
         var today = date;
-        console.log(today);
         if(Date(flashcards[i].nextDateScaled) == today)
             todaysCards.push(flashcards[i]);
     }
@@ -30,20 +29,52 @@ function getTodaysCards(flashcards) {
 }
 
 function nextDayCards() {
-    date++;
+    date.setDate(date.getDate()+1)
     getTodaysCards(flashcards);
     displayFlashcards();
 }
+function displayFirstCard() {
+    showNextCard(todaysCards[displayFlashcards.index]);
+    displayFlashcards.index++;
+}
 
-function displayFlashcards() {
+function displayFlashcards(id) {
     if(displayFlashcards.index == todaysCards.length) {
         alert("You're done with this day's cards!");
         showPopUp();
     }
+    var flashcard = todaysCards[displayFlashcards.index - 1];
+    var quality;
+    if(id == 'easy')
+        quality = 0;
+    else if(id =='medium')
+        quality = 1;
+    else if(id == 'hard')
+        quality = 2;
+
+    console.log("making post req");
+    $.ajax({
+		type: "POST",
+		contentType: "application/json",
+		data: JSON.stringify({"flashcard": flashcard, "quality" : quality}),
+		url: '/apis/updateFlashcardDate',
+		success: function(response) {
+			if(response.status == 'success') {
+			    console.log("updated next practice date");
+			}
+			else {
+				console.log(response.message || "Error!");
+			}
+		},
+		error: function(xhr, status, err) {
+			console.log(err.toString());
+		}
+	});
     showNextCard(todaysCards[displayFlashcards.index]);
     displayFlashcards.index++;
 }
 displayFlashcards.index = 0;
+
 function showNextCard(flashcard) {
     document.getElementById('cardfront').innerHTML = getCardFront(flashcard); 
     document.getElementById('cardback').innerHTML = getCardBack(flashcard); 
@@ -69,20 +100,21 @@ function getCardFront(flashcard) {
 
 function getCardBack(flashcard) {
     var cardBack = '<div>'
-        var back = JSON.parse(flashcard.back);
-        if(back.heading) {
-            cardBack += `<h1>${back.heading}</h1>`;
-        }
-        if(back.subheading) {
-            cardBack += `<h3>${back.subheading}</h3>`;
-        }
-        if(back.para) {
-            cardBack += `<p>${back.para}</p>`;
-        }
-        if(back.img) {
-            cardBack += `<img src = ${back.img}>`;
-        }
-        cardBack += '</div>';
+    var back = JSON.parse(flashcard.back);
+    if(back.heading) {
+        cardBack += `<h1>${back.heading}</h1>`;
+    }
+    if(back.subheading) {
+        cardBack += `<h3>${back.subheading}</h3>`;
+    }
+    if(back.para) {
+        cardBack += `<p>${back.para}</p>`;
+    }
+    if(back.img) {
+        cardBack += `<img src = ${back.img}>`;
+    }
+    cardBack += '</div>';
+    return cardBack;
 }
 
 function showPopUp() {
