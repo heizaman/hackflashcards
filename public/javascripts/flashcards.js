@@ -16,6 +16,7 @@ $(document).ready(function(){
 
 function showFlashcardsOfDeck(flashcards) {
     for(var i=0; i<flashcards.length; i++) {
+        console.log(flashcards[i]);
         var cardFront = '<div class="card-body frontOfCard">'
         var front = JSON.parse(flashcards[i].front);
         if(front.heading) {

@@ -65,6 +65,15 @@ funcs.getFlashcardsOfDeck = function(deckid, callback) {
 	})
 }
 
+funcs.getDeckName = function(deckid, callback) {
+	var qry = 'SELECT name FROM decks WHERE deckid = ?';
+	console.log(deckid);
+
+	db.get().query(qry, [deckid], function(err, result){
+		return callback(err, result);
+	})
+}
+
 funcs.getFlashcard = function(flashcardid, callback) {
 	var qry = 'SELECT * FROM flashcards WHERE flashcardid = ?';
 

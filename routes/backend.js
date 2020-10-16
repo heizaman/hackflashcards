@@ -24,6 +24,15 @@ router.get('/getFlashcards/:deckid', function(req, res, next){
 	})
 })
 
+router.get('/getDeckName/:deckid', function(req, res, next){
+	var deckid = req.params.deckid;
+	db.getDeckName(deckid, function(err, response){
+		response.sort(function(a,b){
+			return a.nextDate - b.nextDate;
+		})
+		return res.json({"status": "Got deck name sucessfully", "result": response});
+	})
+})
 router.get('/getFlashcard/:flashcardid', function(req, res, next){
 	var flashcardid = req.params.flashcardid;
 	db.getFlashcard(flashcardid, function(err, response){

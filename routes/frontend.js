@@ -42,5 +42,13 @@ router.get('/revise/:id', function(req, res, next) {
 		res.render('error');
 	}
 });
+router.get('/deckreview/:id', function(req, res, next) {
+    if(req.params && req.params.id) {
+		res.render('deckreview', { deckid : req.params.id });
+	}
+	else {
+		res.render('error');
+	}
+});
 
 module.exports = router;
