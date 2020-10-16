@@ -21,6 +21,7 @@ function showDecks(decks) {
       var linkToFlashCards = '/flashcards/'+ decks[i].deckid;
       var revise = '/revise/' +  decks[i].deckid;
       var addFlashcard ='/createflashcard/'+decks[i].deckid;
+      var review = '/deckreview/'+decks[i].deckid;
       var toEdit = decks[i];
       console.log(toEdit);
       var deck ='';
@@ -29,7 +30,8 @@ function showDecks(decks) {
       deck += '<td>' + getDateFromTimeStamp(decks[i].endDate) +'        ' + `<button class= "button is-primary edit" onclick=updateDate(${i})>Edit</button></td>`;
       deck += `<td><button class ="button button is-light"><a href = ${revise}>` + 'REVISE' + '</button></a></td>';
       deck += `<td><button class ="button button is-light"><a href = ${addFlashcard}>` + 'ADD FLASHCARD' + '</button></a></td>';
-      deck +='</a></tr>';
+      deck += `<td><button class ="button button is-light"><a href = ${review}>` + 'REVIEW' + '</button></a></td>';
+      deck +='</tr>';
       console.log(deck);
       $('#tableOfDecks').append(deck);
    }
@@ -92,5 +94,5 @@ function onNo() {
 }
 
 function addDeck() {
-   
+
 }

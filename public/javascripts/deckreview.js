@@ -29,20 +29,39 @@ $(document).ready(function(){
 var deckname;
 function showFlashcards(deck) {
     console.log(deckname);
- $("#deck-name").html(' in <a href="/flashcards/'+ deckid +'">' + deckname + '</a>');
- for(var i=0;i< deck.length;i++){
+   $("#deck-name").html(' in <a href="/flashcards/'+ deckid +'">' + deckname + '</a>');
+   for(var i=0;i< deck.length;i++){
     console.log(deck[i].flashcardid);
     var flashcard ='';
     flashcard += '<tr>';
     flashcard += '<td>' + `${i+1}` + '</td>';
-    flashcard += '<td>' + deck[i].front + '</td>';
+   console.log(disp(deck[i].front));
+    flashcard += '<td>' + disp(JSON.parse(deck[i].front)) + '</td>';
     flashcard += '<td>' + getDateFromTimeStamp(deck[i].nextDateScaled) +'</td>';
     flashcard += '</tr>';
     $('#tableOfFlashcards').append(flashcard);
 
  }
 }
-
+function disp(front) {
+   var cardFront='<div>';
+   console.log(front);
+   if(front.heading) {
+      cardFront += `<h1>${front.heading}</h1>`;
+  }
+  if(front.subheading) {
+      cardFront += `<h3>${front.subheading}</h3>`;
+  }
+  if(front.para) {
+      cardFront += `<p>${front.para}</p>`;
+  }
+  if(front.img) {
+      cardFront += `<img width="80" height="90" src = "${front.img}">`;
+  }
+  cardFront+='</div>'
+  console.log(cardFront);
+  return cardFront;
+}
 function getDateFromTimeStamp(endDate) {
  var year = endDate.substring(0,4);
  var month_number = endDate.substring(5,7);

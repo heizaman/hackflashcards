@@ -29,7 +29,7 @@ function showFlashcardsOfDeck(flashcards) {
             cardFront += `<p>${front.para}</p>`;
         }
         if(front.img) {
-            cardFront += `<img src = ${front.img}>`;
+            cardFront += `<img width="200" height="200" src = ${front.img}>`;
         }
         cardFront += '</div>';
         console.log(front);
