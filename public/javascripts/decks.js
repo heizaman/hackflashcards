@@ -13,7 +13,7 @@ $(document).ready(function(){
       });
  });
 
- function showDecks(decks) {
+function showDecks(decks) {
    console.log(decks[0].name);
    //document.getElementById("tableOfDecks").innerHTML = "";
    
@@ -24,7 +24,7 @@ $(document).ready(function(){
       var deck ='';
       deck += '<tr>';
       deck += `<td><a href = ${linkToFlashCards}>` + decks[i].name + '</a></td>';
-      deck += '<td>' + getDateFromTimeStamp(decks[i].endDate) + '</td>';
+      deck += '<td>' + getDateFromTimeStamp(decks[i].endDate) +'        ' + `<button class= "button is-primary edit" onclick=updateDate(${decks[i].deckid})>Edit</button></td>`;
       deck += `<td><button class ="button button is-light"><a href = ${revise}>` + 'REVISE' + '</button></a></td>';
       deck +='</a></tr>';
       $('#tableOfDecks').append(deck);
@@ -32,7 +32,10 @@ $(document).ready(function(){
    }
  }
 
- function getDateFromTimeStamp(endDate) {
+function updateDate(deckid) {
+   console.log(deckid);
+}
+function getDateFromTimeStamp(endDate) {
    var year = endDate.substring(0,4);
    var month_number = endDate.substring(5,7);
    var months_arr = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];

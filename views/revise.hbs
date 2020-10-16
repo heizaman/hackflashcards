@@ -2,7 +2,6 @@
 <link rel='stylesheet' href='/stylesheets/styleforrevise.css' />
 <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
 <body>
-<!-- partial:index.partial.html -->
 <div class="columns is-vcentered">
     <div class="column is-8">
         <label class = "reviselabel">
@@ -19,7 +18,22 @@
         <button class="button is-danger" onclick="displayFlashcards()">Hard</button>
     </div>
 </div>
-<!-- partial -->
+<div class="modal" id="popup">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Next day's cards?</p>
+      <button class="delete" aria-label="close" id="close" onclick="onNo()"></button>
+    </header>
+    <section class="modal-card-body">
+      You've done great today! Do you want to practice tomorrow's cards too? 
+    </section>
+    <footer class="modal-card-foot">
+      <button class="button is-success" id="yes" onclick="onYes()">Yes</button>
+      <button class="button" id="no" onclick="onNo()">No</button>
+    </footer>
+  </div>
+</div>
 </body>
 <script type="text/javascript">
   deckid = "{{deckid}}";

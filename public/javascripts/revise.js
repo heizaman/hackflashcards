@@ -7,6 +7,7 @@ $(document).ready(function(){
             console.log(response.status);
             console.log(response.result);
             flashcards = response.result;
+            todaysCards =  getTodaysCards(response.result);
             displayFlashcards();
        },
        error: function(xhr, status, err) {
@@ -14,11 +15,32 @@ $(document).ready(function(){
        }
     });
 });
+var todaysCards;
 var flashcards;
+var date = new Date();
+function getTodaysCards(flashcards) {
+    var todaysCards = [];
+    for(var i=0; i<flashcards.length; i++) {
+        var today = date;
+        console.log(today);
+        if(Date(flashcards[i].nextDateScaled) == today)
+            todaysCards.push(flashcards[i]);
+    }
+    return todaysCards;
+}
+
+function nextDayCards() {
+    date++;
+    getTodaysCards(flashcards);
+    displayFlashcards();
+}
+
 function displayFlashcards() {
-    if(displayFlashcards.index == flashcards.length)
-        alert("You're done!");
-    showNextCard(flashcards[displayFlashcards.index]);
+    if(displayFlashcards.index == todaysCards.length) {
+        alert("You're done with this day's cards!");
+        showPopUp();
+    }
+    showNextCard(todaysCards[displayFlashcards.index]);
     displayFlashcards.index++;
 }
 displayFlashcards.index = 0;
@@ -42,7 +64,6 @@ function getCardFront(flashcard) {
         cardFront += `<img src = ${front.img}>`;
     }
     cardFront += '</div>';
-    console.log(front);
     return cardFront;
 }
 
@@ -62,4 +83,20 @@ function getCardBack(flashcard) {
             cardBack += `<img src = ${back.img}>`;
         }
         cardBack += '</div>';
+}
+
+function showPopUp() {
+    var popup = document.getElementById('popup');
+    popup.classList.add('is-active');
+}
+
+function onYes() {
+    var popup = document.getElementById('popup');
+    popup.classList.remove('is-active');
+    nextDayCards();
+}
+
+function onNo() {
+    var popup = document.getElementById('popup');
+    popup.classList.remove('is-active');
 }
