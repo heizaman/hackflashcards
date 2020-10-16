@@ -35,7 +35,7 @@ function showDecks(decks) {
 
  var deck;
  function updateDate(i) {
-   showPopUp();
+   showPopUp(decks[i]);
    deck = decks[i];
 }
 
@@ -48,8 +48,8 @@ function getDateFromTimeStamp(endDate) {
    return day.toString() + '-' + months_arr[month_number-1] + '-' + year;
  }
 
-function showPopUp() {
-   document.getElementById('popup-title').innerHTML('"hi');
+function showPopUp(deck) {
+   document.getElementById('popup-title').innerHTML = deck.name;
    var popup = document.getElementById('popup');
    popup.classList.add('is-active');
 }
@@ -76,6 +76,7 @@ function onYes() {
 			console.log(err.toString());
 		}
    });
+
    var millisecondsToWait = 50;
       setTimeout(function() {
          location.reload();
