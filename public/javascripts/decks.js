@@ -40,14 +40,16 @@ function showDecks(decks) {
 }
 
 function getDateFromTimeStamp(endDate) {
+   console.log(endDate);
    var year = endDate.substring(0,4);
    var month_number = endDate.substring(5,7);
    var months_arr = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-   var day = endDate.substring(8,10);
-   return day + '-' + months_arr[month_number-1] + '-' + year;
+   var day = parseInt(endDate.substring(8,10)) + 1;
+   return day.toString() + '-' + months_arr[month_number-1] + '-' + year;
  }
+
 function showPopUp() {
-   //var popup-title =
+   document.getElementById('popup-title').innerHTML('"hi');
    var popup = document.getElementById('popup');
    popup.classList.add('is-active');
 }
@@ -74,6 +76,11 @@ function onYes() {
 			console.log(err.toString());
 		}
    });
+   var millisecondsToWait = 50;
+      setTimeout(function() {
+         location.reload();
+   }, millisecondsToWait);
+   
 }
 
 function onNo() {
