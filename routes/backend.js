@@ -18,7 +18,7 @@ router.get('/getFlashcards/:deckid', function(req, res, next){
 	var deckid = req.params.deckid;
 	db.getFlashcardsOfDeck(deckid, function(err, response){
 		response.sort(function(a,b){
-			return a.nextDate - b.nextDate;
+			return a.nextDateScaled - b.nextDateScaled;
 		})
 		return res.json({"status": "Flashcards fetched successfully", "result": response});
 	})
@@ -127,7 +127,6 @@ router.post('/updateDeck', function(req, res, next) {
 	var front = req.body.front;
 	var back = req.body.back;
 	var endDate = req.body.endDate;
-
 	if(deckid == "")
 		return res.json({ "status": "failed", "message": "Invalid DeckId!"});
 

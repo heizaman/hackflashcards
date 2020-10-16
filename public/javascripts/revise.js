@@ -18,29 +18,47 @@ $(document).ready(function(){
 var todaysCards;
 var flashcards;
 var date = new Date();
+
 function getTodaysCards(flashcards) {
     var todaysCards = [];
     for(var i=0; i<flashcards.length; i++) {
-        var today = date;
-        if(Date(flashcards[i].nextDateScaled) == today)
+        var nextDate = new Date(flashcards[i].nextDateScaled);
+        if(dateEqual(nextDate))
             todaysCards.push(flashcards[i]);
     }
+    console.log(todaysCards);
+    displayFlashcards.index = 0;
     return todaysCards;
 }
 
-function nextDayCards() {
-    date.setDate(date.getDate()+1)
-    getTodaysCards(flashcards);
-    displayFlashcards();
+function dateEqual(nextDate) {
+    if(date.getDate() == nextDate.getDate() && date.getMonth() == nextDate.getMonth())
+        return true;
+    return false;
 }
 function displayFirstCard() {
+    if(displayFlashcards.index == todaysCards.length) {
+        showPopUp();
+        return;
+    }
     showNextCard(todaysCards[displayFlashcards.index]);
     displayFlashcards.index++;
 }
 
+function nextDayCards() {
+    date = getNextScheduledDate();
+    if(date == null) {
+        alert("You've learnt the deck");
+        return;
+    }
+    todaysCards = getTodaysCards(flashcards);
+    console.log(todaysCards.length);
+    console.log(todaysCards + "nextdaycards");
+    showNextCard(todaysCards[displayFlashcards.index]);
+}
+
 function displayFlashcards(id) {
     if(displayFlashcards.index == todaysCards.length) {
-        alert("You're done with this day's cards!");
         showPopUp();
     }
     var flashcard = todaysCards[displayFlashcards.index - 1];
@@ -70,8 +88,8 @@ function displayFlashcards(id) {
 			console.log(err.toString());
 		}
 	});
-    showNextCard(todaysCards[displayFlashcards.index]);
-    displayFlashcards.index++;
+    displayFirstCard(todaysCards[displayFlashcards.index]);
+    //displayFlashcards.index++;
 }
 displayFlashcards.index = 0;
 
@@ -79,6 +97,7 @@ function showNextCard(flashcard) {
     document.getElementById('cardfront').innerHTML = getCardFront(flashcard); 
     document.getElementById('cardback').innerHTML = getCardBack(flashcard); 
 }
+
 function getCardFront(flashcard) {
     var cardFront = '<div>'
     var front = JSON.parse(flashcard.front);
@@ -131,4 +150,15 @@ function onYes() {
 function onNo() {
     var popup = document.getElementById('popup');
     popup.classList.remove('is-active');
+}
+
+function getNextScheduledDate() {
+    for(var i=0;i<flashcards.length;i++) {
+        nextDate = new Date(flashcards[i].nextDateScaled);
+        if(nextDate > date) {
+            console.log(nextDate +"sangu");
+            return nextDate;
+        }   
+    }
+    return null;
 }
