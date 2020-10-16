@@ -46,11 +46,11 @@ function displayFlashcards(id) {
     var flashcard = todaysCards[displayFlashcards.index - 1];
     var quality;
     if(id == 'easy')
-        quality = 0;
+        quality = 2;
     else if(id =='medium')
         quality = 1;
     else if(id == 'hard')
-        quality = 2;
+        quality = 0;
 
     console.log("making post req");
     $.ajax({
