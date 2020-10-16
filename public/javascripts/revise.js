@@ -55,6 +55,7 @@ function nextDayCards() {
     console.log(todaysCards.length);
     console.log(todaysCards + "nextdaycards");
     showNextCard(todaysCards[displayFlashcards.index]);
+    displayFlashcards.index++;
 }
 
 function displayFlashcards(id) {
@@ -88,8 +89,8 @@ function displayFlashcards(id) {
 			console.log(err.toString());
 		}
 	});
-    displayFirstCard(todaysCards[displayFlashcards.index]);
-    //displayFlashcards.index++;
+    showNextCard(todaysCards[displayFlashcards.index]);
+    displayFlashcards.index++;
 }
 displayFlashcards.index = 0;
 
