@@ -759,8 +759,11 @@ router.post("/reorder", function(req, res, next){
 					}
 				});
 			}
+
 		})
 	})
+
+	res.json({"status": "success", "message" : "Reorder "});
 })
 
 module.exports = router;
