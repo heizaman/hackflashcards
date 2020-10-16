@@ -8,7 +8,7 @@ var db = require('../DBfunctions/sqlDB.js');
 router.get('/getDecks', function(req, res, next) {
 	db.getDecks(function(err, response){
 		response.sort(function(a,b){
-			return a.startDate - b.startDate;
+			return a.endDate - b.endDate;
 		})
 		return res.json({"status" : "Decks fetched successfully", "result" : response});
 	})
@@ -28,6 +28,18 @@ router.get('/getFlashcard/:flashcardid', function(req, res, next){
 	var flashcardid = req.params.flashcardid;
 	db.getFlashcard(flashcardid, function(err, response){
 		return res.json({"status": "Flashcard fetched successfully", "result": response});
+	})
+})
+
+router.get('/getFlashcardsOfToday/:deckid',function(req, res, next){
+	var deckid = req.params.deckid;
+	console.log(deckid);
+	db.getFlashcardsOfToday(deckid, function(err, response){
+		// response.sort(function(a, b){
+		// 	return a.repetitions - b.repetitions;
+		// })
+		console.log(response);
+		return res.json({"status": "Flashcards of today fetched successfully", "result" : response});
 	})
 })
 
@@ -240,7 +252,8 @@ function changeEndDateScaledForAllFlashcards(deckid) {
 					var differenceInTime = endDate.getTime() - startDate.getTime();
 					console.log("The difference in time value is as follows : ");
 					console.log(differenceInTime);
-					var referenceTime = 15778476000;
+					// var referenceTime = 15778476000;
+					var referenceTime = 2592000000;
 					var fraction = differenceInTime / referenceTime;
 
 
@@ -524,7 +537,8 @@ router.post('/updateFlashcardDate', function(req, res, next) {
 		var differenceInTime = endDate.getTime() - startDate.getTime();
 		console.log("The difference in time value : ");
 		console.log(differenceInTime);
-		var referenceTime = 15778476000;
+		// var referenceTime = 15778476000;
+		var referenceTime = 2592000000;
 		var fraction = differenceInTime / referenceTime;
 		console.log("The fraction value is : " + fraction);
 		var differenceBetweenNextDateAndPresentDate = nextDate.getTime() - presentDate.getTime();
@@ -558,13 +572,17 @@ router.post('/updateFlashcardDate', function(req, res, next) {
 		console.log(nextDate);
 		console.log(nextDateScaled);
 
-		db.updateFlashcard(flashcardid, front, back, repetitions, inter, easiness, nextDate, nextDateScaled, display, function (err, rows) {
+		if(quality <=1 && repetitions<=1){
+			nextDateScaled = nextDate;
+		}
+
+		db.updateFlashcard(flashcardid, front, back, repetitions, inter, easiness, nextDate, nextDateScaled, function (err, response) {
 			if (err) {
 				console.log(err);
 				return res.json({ "status": "failed", "message": "Error!" });
 			}
 	
-			return res.json({ "status": "success", "message": "Deck updated successfully" });
+			return res.json({ "status": "success", "message": "Deck updated successfully", "response" :  response});
 		});
 	})
 
