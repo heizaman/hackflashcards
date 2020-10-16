@@ -698,4 +698,69 @@ router.post('/reorderFlashcards', function(req, res, next){
 	
 })
 
+router.post("/reorder", function(req, res, next){
+	var presentDate = new Date();
+	var deckid = req.body.deckid;
+
+	db.getDeck(deckid, function(err, response){
+		if(err){
+			console.log(err);
+			return res.json({"status": "failed", "message": "Error!" });
+		}
+
+		var string = JSON.stringify(response);
+		var json = JSON.parse(string);
+
+		console.log("Response of getDeck");
+		console.log(json);
+
+		var endDate = json[0].endDate;
+		endDate = new Date(endDate);
+
+		var leftDays = endDate.getDate() - presentDate.getDate() + 1;
+		db.getFlashcardsOfDeck(deckid, function(err,response) {
+			if(err){
+				console.log(err);
+				return res.json({"status": "failed", "message": "Error!" });
+			}
+
+			response.sort(function(a, b){
+				return a.nextDate - b.nextDate;
+			})
+
+			
+			var stringFlashcard = JSON.stringify(response);
+			var jsonFlashcards = JSON.parse(stringFlashcard);
+
+			var totalFlashcards = jsonFlashcards.length;
+			var millisecondsInDay = 86400000;
+			
+			for(let i=0 ; i < totalFlashcards ; i++) {
+				jsonFlashcards[i].nextDate = new Date(jsonFlashcards[i].nextDate);
+				jsonFlashcards[i].nextDateScaled = new Date(jsonFlashcards[i].nextDateScaled);
+
+				if(jsonFlashcards[i].repetitions > 0){
+					jsonFlashcards[i].nextDate = new Date(jsonFlashcards[i].nextDate.getTime() + millisecondsInDay);
+					jsonFlashcards[i].nextDateScaled = new Date(jsonFlashcards[i].nextDateScaled.getTime() + millisecondsInDay);
+				}
+
+				if(jsonFlashcards[i].nextDateScaled.getTime() - endDate.getTime() > 0){
+					jsonFlashcards[i].nextDateScaled = endDate;
+				}
+			}
+
+			for(let r=0;r< totalFlashcards; r++) {
+                 
+				db.updateFlashcard(jsonFlashcards[r].flashcardid, jsonFlashcards[r].front, jsonFlashcards[r].back, jsonFlashcards[r].repetitions, jsonFlashcards[r].inter, 
+					jsonFlashcards[r].easiness, jsonFlashcards[r].nextDate, jsonFlashcards[r].nextDateScaled, function (err, rows) {
+					if (err) {
+						console.log(err);
+						return res.json({ "status": "failed", "message": "Error!" });
+					}
+				});
+			}
+		})
+	})
+})
+
 module.exports = router;
