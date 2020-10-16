@@ -10,8 +10,29 @@
             </tr>
         </thead>
         <tbody>
-
         </tbody>
     </table>
 </center>
+<div class="modal" id="popup">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Edit the learn by date of <span id="popup-title"></span></p>
+      <button class="delete" aria-label="close" id="close" onclick="onNo()"></button>
+    </header>
+    <section class="modal-card-body" id="popup-body">
+      When do you want to complete learning this deck?
+      <div class="field">
+          <label class="label">Learn By</label>
+          <div class="control">
+            <input type="date" id="deck-date" name="Date">
+          </div>
+        </div>
+    </section>
+    <footer class="modal-card-foot">
+      <button class="button is-success" id="yes" onclick="onYes()">Yes</button>
+      <button class="button" id="no" onclick="onNo()">No</button>
+    </footer>
+  </div>
+</div>
 <script src="/javascripts/decks.js"></script>
