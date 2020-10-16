@@ -90,3 +90,7 @@ function onNo() {
    var popup = document.getElementById('popup');
    popup.classList.remove('is-active');
 }
+
+function addDeck() {
+   
+}
