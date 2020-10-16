@@ -41,7 +41,7 @@
 
 .revisecard .reviseback {
   background: #222;
-  color: #FFF;
+  color: #222;
   -webkit-transform: rotateX(180deg);
   transform: rotateX(180deg);
 }
